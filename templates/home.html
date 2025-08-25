@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block contenido %}
+   <nav class="navbar bg-body-tertiary">
+  <div class="container-fluid">
+    
+    <div class="d-flex ms-auto navbar-links">
+      {% if user.is_staff %}
+        <a class="navbar-brand" href="/admin/">Administración</a>
+      {% endif %}
+      <form method="post" action="{% url 'logout' %}" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="navbar-brand btn btn-link" style="text-decoration: none;">Cerrar sesión</button>
+      </form>
+    </div>
+  </div>
+</nav>
+
+<br/>
+<br/>
+<br/>
+<br/>
+{% comment %} CONSULTAS {% endcomment %}
+
+  <h1 class= "mb-4 text-center">Realizar Busqueda</h1>
+  <div class="container mt-5">
+  <h3 class="mb-4 text-center">🔀 Usuarios aleatorios</h3>
+  
+  <!-- Formulario para elegir cuántos usuarios generar -->
+  <form method="get" class="row g-2 justify-content-center mb-4">
+  <div class="col-6 col-md-4">
+    <input
+      type="number"
+      name="results"
+      min="1"
+      max="10"
+      value="{{ cantidad }}"
+      class="form-control form-control-lg"
+      placeholder="Cantidad">
+  </div>
+  <div class="col-auto">
+    <button type="submit" class="btn btn-primary btn-lg">
+      Generar
+    </button>
+  </div>
+</form>
+
+  <!-- Mostrar cada usuario en una tarjeta -->
+  <div class="row">
+    {% for u in usuarios %}
+      <div class="col-md-4 mb-3">
+        <div class="card h-100 shadow-sm">
+          <img src="{{ u.picture.large }}" class="card-img-top" alt="Foto de {{ u.name.first }}">
+          <div class="card-body">
+            <h5 class="card-title">
+              {{ u.name.title }} {{ u.name.first }} {{ u.name.last }}
+            </h5>
+            <p class="card-text mb-1"><strong>Email:</strong> {{ u.email }}</p>
+            <p class="card-text mb-1"><strong>Teléfono:</strong> {{ u.phone }}</p>
+            <p class="card-text mb-1"><strong>Celular:</strong> {{ u.cell }}</p>
+            <p class="card-text mb-1">
+              <strong>Ciudad:</strong> {{ u.location.city }}, {{ u.location.state }}
+            </p>
+            <p class="card-text mb-0">
+              <strong>País:</strong> {{ u.location.country }}
+            </p>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-muted">No se recibieron usuarios.</p>
+    {% endfor %}
+  </div>
+</div>
+
+
+
+{% endblock %}

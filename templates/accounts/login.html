@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block contenido %}
+<div class="d-flex justify-content-center align-items-center vh-100 bg-light">
+  <div class="card shadow p-4" style="width: 100%; max-width: 400px;">
+    <h4 class="mb-4 text-center">Acceso al sistema</h4>
+    <form method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label for="id_username" class="form-label">Nombre de usuario</label>
+        <input type="text" name="username" class="form-control" id="id_username" required>
+      </div>
+      <div class="mb-3">
+        <label for="id_password" class="form-label">Contraseña</label>
+        <input type="password" name="password" class="form-control" id="id_password" required>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Ingresar</button>
+    </form>
+
+    {% if form.errors %}
+      <div class="alert alert-danger mt-3">
+        Usuario o contraseña incorrectos.
+      </div>
+    {% endif %}
+
+    <div class="text-center mt-4">
+      <small class="text-muted">¿No tenés cuenta?</small><br>
+      <a href="{% url 'registro' %}" class="btn btn-outline-secondary btn-sm mt-2">Solicitar acceso</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
