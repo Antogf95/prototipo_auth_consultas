@@ -1,5 +1,8 @@
+.navbar{
+  background-color: rgb(88, 178, 223)
+}
 body {
-  background-color: rgb(235, 232, 232);
+  background-color: rgb(242, 248, 250);
 }
 
 /* Estilo para los enlaces de navegación */
@@ -32,3 +35,5 @@ body {
   padding: 0;
   cursor: pointer;
 }
+
+

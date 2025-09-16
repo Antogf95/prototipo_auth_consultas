@@ -1,21 +1,21 @@
-import requests
+from django.db.models import Func, F, Value
+from django.db.models.functions import Replace
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from .models import Episodio
+
 
 @login_required
-def consultar_home(request):
-    # Cantidad de usuarios a solicitar (por defecto 1)
-    cantidad = request.GET.get('results', 1)
+def home(request):
+    dni = request.GET.get('dni', '').strip()
+    episodios = []
 
-    # Llamada a la API
-    url = f'https://randomuser.me/api/?results={cantidad}'
-    response = requests.get(url)
-    data = response.json() if response.status_code == 200 else {}
-
-    # Extraemos la lista de usuarios (clave "results")
-    usuarios = data.get('results', [])
+    if dni:
+        episodios = Episodio.objects.select_related('paciente', 'medico').filter(
+            paciente__dni__icontains=dni
+        )
 
     return render(request, 'home.html', {
-        'usuarios': usuarios,
-        'cantidad': cantidad,
+        'dni': dni,
+        'episodios': episodios
     })
