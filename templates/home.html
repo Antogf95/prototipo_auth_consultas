@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block contenido %}
-<nav class="navbar ">
+<nav class="navbar">
   <div class="container-fluid">
     <div class="d-flex ms-auto navbar-links">
       {% if user.is_staff %}
@@ -20,70 +20,106 @@
     <div class="col-md-8 text-center">
       <h2 class="mb-4">🔍 Consultas por DNI</h2>
       <form method="get" action="{% url 'home' %}" class="d-flex justify-content-center gap-2 mb-3">
-        <input type="text" id="dni" name="dni" value="{{ dni }}" class="form-control w-50" placeholder="Ej: 11.222.333" required oninput="this.value = this.value.replace(/\./g, '')"
- />
+        <input type="text" id="dni" name="dni" value="{{ dni }}" class="form-control w-50"
+               placeholder="Ej: 11222333" required
+               oninput="this.value = this.value.replace(/\./g, '')" />
         <button type="submit" class="btn btn-primary">Buscar</button>
       </form>
       <p><strong>DNI buscado:</strong> {{ dni }}</p>
-      <p><strong>Cantidad de episodios encontrados:</strong> {{ episodios|length }}</p>
+      <p><strong>Cantidad de episodios encontrados:</strong> {{ resultados|length }}</p>
     </div>
   </div>
 
-    {% if episodios %}
-    <div class="row justify-content-center">
-      <div class="col-md-12">
-        <h3 class="text-center mb-4">Resultados para DNI: {{ dni }}</h3>
-        {% for episodio in episodios %}
-          <div class="card mb-4 mx-auto" style="width: 100%;">
-            <div class="card-header bg-secondary text-white">
-              <strong>Episodio ID:</strong> {{ episodio.id_episodio }}
-            </div>
-            <div class="card-body">
-              <div class="row">
-                <div class="col-md-4">
-                  <h5>👤 Paciente</h5>
-                  <p><strong>Nombre:</strong> {{ episodio.paciente.nombre }}</p>
-                  <p><strong>DNI:</strong> {{ episodio.paciente.dni }}</p>
-                  <p><strong>Fecha de nacimiento:</strong> {{ episodio.paciente.fecha_nacimiento }}</p>
-                  <p><strong>Sexo:</strong> {{ episodio.paciente.sexo }}</p>
-                  <p><strong>Dirección:</strong> {{ episodio.paciente.direccion }}</p>
-                  <p><strong>Teléfono:</strong> {{ episodio.paciente.telefono }}</p>
-                </div>
+{% if resultados %}
+<div class="factura-container">
+  <div class="row justify-content-center">
+    <div class="col-12 d-flex justify-content-center">
+      <h2 class="text-center mb-4 w-100">Resultados para DNI: {{ dni }}</h2>
+    </div>
 
-                <div class="col-md-4">
-                  <h5>📋 Episodio</h5>
-                  <p><strong>Fecha atención:</strong> {{ episodio.fecha_atencion }}</p>
-                  <p><strong>Hora atención:</strong> {{ episodio.hora_atencion }}</p>
-                  <p><strong>Texto fecha/hora:</strong> {{ episodio.txt_fecha_hora_atencion }}</p>
-                  <p><strong>Motivo de consulta:</strong> {{ episodio.motivo_de_consulta }}</p>
-                  <p><strong>Síntomas breves:</strong> {{ episodio.sintomas_breve }}</p>
-                  <p><strong>Tratamiento previo:</strong> {{ episodio.tratamiento_previo }}</p>
-                  <p><strong>Diagnóstico presuntivo:</strong> {{ episodio.diagnostico_presuntivo }}</p>
-                  <p><strong>CIE10 diagnóstico:</strong> {{ episodio.cie10_diagnostico_presuntivo }}</p>
-                  <p><strong>Tratamiento:</strong> {{ episodio.tratamiento }}</p>
-                  <p><strong>Stamp:</strong> {{ episodio.stamp }}</p>
-                </div>
+    {% for episodio in resultados %}
+    <div class="mb-5 border border-dark p-3 shadow w-100" style="max-width:1400px;">
 
-                <div class="col-md-4">
-                  <h5>🩺 Médico</h5>
-                  <p><strong>Usuario:</strong> {{ episodio.medico.usuario }}</p>
-                  <p><strong>Nombre:</strong> {{ episodio.medico.datos_medico }}</p>
-                  <p><strong>ID Médico:</strong> {{ episodio.medico.id_medico }}</p>
-                  <p><strong>Matrícula:</strong> {{ episodio.medico.n_matricula }}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        {% endfor %}
+      <table class="table table-bordered table-sm mb-3" style="font-size:0.9rem;">
+        <tbody>
+          <tr>
+            <td><strong>IdIngreso</strong>: {{ episodio.id_ingreso }}</td>
+            <td><strong>IdIngresoOrigen</strong>: {{ episodio.id_ingreso_origen }}</td>
+            <td><strong>IdSector</strong>: {{ episodio.id_sector }}</td>
+            <td><strong>FechaIngreso</strong>: {{ episodio.fecha_ingreso }}</td>
+          </tr>
+          <tr>
+            <td><strong>HoraIngreso</strong>: {{ episodio.hora_ingreso }}</td>
+            <td><strong>Usuario</strong>: {{ episodio.usuario }}</td>
+            <td><strong>ClavePaciente</strong>: {{ episodio.clave_paciente }}</td>
+            <td><strong>IdPaciente</strong>: {{ episodio.id_paciente }}</td>
+          </tr>
+          <tr>
+            <td colspan="2"><strong>Paciente</strong>: {{ episodio.paciente }}</td>
+            <td><strong>IdHCL</strong>: {{ episodio.id_hcl }}</td>
+            <td><strong>IdEpisodio</strong>: {{ episodio.id_episodio }}</td>
+          </tr>
+          <tr>
+            <td><strong>ObraSocial</strong>: {{ episodio.obra_social }}</td>
+            <td><strong>IdObraSocial</strong>: {{ episodio.id_obra_social }}</td>
+            <td><strong>NroBono</strong>: {{ episodio.nro_bono }}</td>
+            <td><strong>IdAfiliado</strong>: {{ episodio.id_afiliado }}</td>
+          </tr>
+          <tr>
+            <td colspan="2"><strong>DatosTransacción</strong>: {{ episodio.datos_transaccion }}</td>
+            <td><strong>CPostal</strong>: {{ episodio.cpostal }}</td>
+            <td><strong>Provincia</strong>: {{ episodio.provincia }}</td>
+          </tr>
+          <tr>
+            <td><strong>Calle</strong>: {{ episodio.calle }}</td>
+            <td><strong>Localidad</strong>: {{ episodio.localidad }}</td>
+            <td><strong>Médico</strong>: {{ episodio.medico }}</td>
+            <td><strong>Matricula</strong>: {{ episodio.matricula }}</td>
+          </tr>
+          <tr>
+            <td><strong>IdMedico</strong>: {{ episodio.id_medico }}</td>
+            <td><strong>UsuarioMedico</strong>: {{ episodio.usuario_medico }}</td>
+            <td><strong>IdMedicoSolicitante</strong>: {{ episodio.id_medico_solicitante }}</td>
+            <td><strong>MedicoSolicitante</strong>: {{ episodio.medico_solicitante }}</td>
+          </tr>
+          <tr>
+            <td><strong>FechaAtencion</strong>: {{ episodio.fecha_atencion }}</td>
+            <td><strong>HoraAtencion</strong>: {{ episodio.hora_atencion }}</td>
+            <td><strong>txtFechaHoraAtencion</strong>: {{ episodio.txt_fecha_hora_atencion }}</td>
+            <td><strong>IdTipoEpisodio</strong>: {{ episodio.id_tipo_episodio }}</td>
+          </tr>
+          <tr>
+            <td><strong>EpisodioIdIngreso</strong>: {{ episodio.episodio_id_ingreso }}</td>
+            <td><strong>EpisodioIdHCL</strong>: {{ episodio.episodio_id_hcl }}</td>
+            <td><strong>EpisodioMedico</strong>: {{ episodio.episodio_medico }}</td>
+            <td><strong>EpisodioMedicoSolicitante</strong>: {{ episodio.episodio_medico_solicitante }}</td>
+          </tr>
+          <tr>
+            <td colspan="4"><strong>EpisodioStamp</strong>: {{ episodio.episodio_stamp }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="border p-2" style="min-height:100px;">
+        <strong>Manuscrito Breve:</strong><br>
+        {{ episodio.txt_rtb_hcl }}
       </div>
     </div>
-  {% elif dni %}
-    <div class="row justify-content-center">
-      <div class="col-md-6 text-center">
-        <div class="alert alert-warning mt-4">No se encontraron episodios para el DNI ingresado.</div>
-      </div>
-    </div>
-  {% endif %}
+    {% endfor %}
+
+  </div>
 </div>
 
+{% elif dni %}
+<div class="row justify-content-center">
+  <div class="col-md-6 text-center">
+    <div class="alert alert-warning mt-4">
+      No se encontraron episodios para el DNI ingresado.
+    </div>
+  </div>
+</div>
+{% endif %}
+
+  
+</div>
 {% endblock %}

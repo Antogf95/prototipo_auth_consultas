@@ -1,84 +1,48 @@
 from django.db import models
 
-class UsuarioMedico(models.Model):
-    usuario = models.CharField(max_length=50, primary_key=True)
-    id_medico = models.IntegerField(unique=True)  # Mejor usar IntegerField si es un ID
-    alcance = models.IntegerField(default=0)
-    n_matricula = models.IntegerField(default=0)
-    pregunta = models.CharField(max_length=50, null=True, blank=True)
-    respuesta = models.CharField(max_length=50, null=True, blank=True)
-    password = models.CharField(max_length=50, null=True, blank=True)
-    stamp = models.DateTimeField(null=True)
-    datos_medico = models.CharField(max_length=80, null=True, blank=True)
+class TempEpisodioAdmision(models.Model):
+    id_ingreso = models.IntegerField(db_column='IdIngreso', primary_key=True)
+    id_ingreso_origen = models.IntegerField(db_column='IdIngresoOrigen', null=True)
+    id_sector = models.IntegerField(db_column='IdSector', null=True)
+    txt_fecha_ingreso = models.CharField(db_column='txtFechaIngreso', max_length=12, null=True)
+    fecha_ingreso = models.DateTimeField(db_column='FechaIngreso', null=True)
+    hora_ingreso = models.DateTimeField(db_column='HoraIngreso', null=True)
+    usuario = models.CharField(db_column='Usuario', max_length=50, null=True)
+    clave_paciente = models.IntegerField(db_column='ClavePaciente', null=True)
+    id_paciente = models.BigIntegerField(db_column='IdPaciente', null=True)
+    paciente = models.CharField(db_column='Paciente', max_length=50, null=True)
+    id_hcl = models.FloatField(db_column='IdHCL', null=True)
+    id_episodio = models.IntegerField(db_column='IdEpisodio', null=True)
+    obra_social = models.CharField(db_column='ObraSocial', max_length=50, null=True)
+    id_obra_social = models.IntegerField(db_column='IdObraSocial', null=True)
+    nro_bono = models.CharField(db_column='NroBono', max_length=50, null=True)
+    id_afiliado = models.CharField(db_column='IdAfiliado', max_length=50, null=True)
+    datos_transaccion = models.TextField(db_column='DatosTransaccion', null=True)
+    calle = models.CharField(db_column='CALLE', max_length=30, null=True)
+    localidad = models.CharField(db_column='Localidad', max_length=50, null=True)
+    cpostal = models.IntegerField(db_column='CPostal', null=True)
+    provincia = models.CharField(db_column='Provincia', max_length=30, null=True)
+    medico = models.CharField(db_column='Medico', max_length=50, null=True)
+    id_medico = models.IntegerField(db_column='IdMedico', null=True)
+    usuario_medico = models.CharField(db_column='UsuarioMedico', max_length=50, null=True)
+    matricula = models.IntegerField(db_column='Matricula', null=True)
+    id_medico_solicitante = models.IntegerField(db_column='IdMedicoSolicitante', null=True)
+    medico_solicitante = models.CharField(db_column='MedicoSolicitante', max_length=80, null=True)
+    admision_stamp = models.DateTimeField(db_column='Admision_Stamp', null=True)
+    episodio_id_episodio = models.IntegerField(db_column='Episodio_IdEpisodio')
+    episodio_id_ingreso = models.IntegerField(db_column='Episodio_IdIngreso', null=True)
+    episodio_id_hcl = models.IntegerField(db_column='Episodio_IdHCL', null=True)
+    id_tipo_episodio = models.IntegerField(db_column='IdTipoEpisodio', null=True)
+    episodio_id_medico = models.IntegerField(db_column='Episodio_IdMedico', null=True)
+    episodio_medico = models.CharField(db_column='Episodio_Medico', max_length=50, null=True)
+    fecha_atencion = models.DateTimeField(db_column='FechaAtencion', null=True)
+    hora_atencion = models.DateTimeField(db_column='HoraAtencion', null=True)
+    txt_fecha_hora_atencion = models.CharField(db_column='txtFechaHoraAtencion', max_length=50, null=True)
+    episodio_id_medico_solicitante = models.IntegerField(db_column='Episodio_IdMedicoSolicitante', null=True)
+    episodio_medico_solicitante = models.CharField(db_column='Episodio_MedicoSolicitante', max_length=80, null=True)
+    txt_rtb_hcl = models.TextField(db_column='txtRTBHCL', null=True)
+    episodio_stamp = models.CharField(db_column='Episodio_Stamp', max_length=255, null=True)
 
     class Meta:
-        db_table = 'UsuariosMedicos'
-        indexes = [
-            models.Index(fields=['id_medico']),
-        ]
-
-    def __str__(self):
-        return f"{self.nombre} (ID: {self.id_medico})"
-
-
-class Paciente(models.Model):
-    id_paciente = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=100)
-    dni = models.CharField(max_length=20, unique=True)
-    fecha_nacimiento = models.DateField(null=True, blank=True)
-    sexo = models.CharField(max_length=10, choices=[('M', 'Masculino'), ('F', 'Femenino')], null=True, blank=True)
-    direccion = models.CharField(max_length=255, null=True, blank=True)
-    telefono = models.CharField(max_length=50, null=True, blank=True)
-
-    class Meta:
-        db_table = 'Pacientes'
-
-    def __str__(self):
-        return f"{self.nombre} (DNI: {self.dni})"
-
-
-class Episodio(models.Model):
-    id_episodio = models.AutoField(primary_key=True)
-    id_ingreso = models.IntegerField(default=0)
-    id_hcl = models.IntegerField(default=0)
-    id_tipo_episodio = models.IntegerField(default=0)
-    id_capitulo = models.IntegerField(default=0)
-    
-    medico = models.ForeignKey(
-        UsuarioMedico,
-        to_field='usuario',
-        on_delete=models.SET_NULL,
-        null=True,
-        db_column='Usuario'
-    )
-
-    paciente = models.ForeignKey(
-        Paciente,
-        on_delete=models.SET_NULL,
-        null=True,
-        db_column='IdPaciente'
-    )
-
-    fecha_atencion = models.DateTimeField(null=True, blank=True)
-    hora_atencion = models.DateTimeField(null=True, blank=True)
-    txt_fecha_hora_atencion = models.CharField(max_length=50, null=True, blank=True)
-
-    motivo_de_consulta = models.CharField(max_length=50, default='', blank=True)
-    sintomas_breve = models.TextField(null=True, blank=True)
-    tratamiento_previo = models.TextField(default='', blank=True)
-    diagnostico_presuntivo = models.CharField(max_length=255, default='', blank=True)
-    cie10_diagnostico_presuntivo = models.CharField(max_length=10, default='', blank=True)
-    tratamiento = models.TextField(default='', blank=True)
-    stamp = models.CharField(max_length=255, default='current_timestamp()', blank=True)
-
-    class Meta:
-        db_table = 'TblEpisodios'
-        indexes = [
-            models.Index(fields=['id_capitulo']),
-            models.Index(fields=['id_ingreso']),
-            models.Index(fields=['medico']),
-            models.Index(fields=['paciente']),
-        ]
-
-    def __str__(self):
-        return f"Episodio {self.id_episodio} - {self.medico} - {self.paciente}"
+        managed = False
+        db_table = 'temp_episodios_admision'
